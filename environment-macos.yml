@@ -1,0 +1,37 @@
+# Slim, cross-platform Conda/Micromamba environment for macOS (Apple Silicon or Intel).
+#
+# IMPORTANT: ROS2 (rclpy, rosbag2_py, sensor_msgs, ffmpeg_image_transport_msgs) is
+# provided on Linux only via RoboStack and is intentionally omitted here. The rosbag
+# conversion scripts under scripts/ import ROS2 and will NOT run on macOS. This
+# environment installs Python plus the bundled LeRobot fork so you can develop against
+# and inspect LeRobot datasets locally; run the actual conversion on a Linux x86_64 box
+# using the full environment.yml.
+#
+# Create (run from the repo root so the local ./lerobot path resolves):
+#   conda env create -f environment-macos.yml
+#   # or
+#   micromamba create -f environment-macos.yml
+#
+# Activate:
+#   conda activate rosbag2lerobot
+#
+# If the solver errors with "__osx ... is missing on the system", your tool failed to
+# detect the macOS version. Prefix the create command with an override, e.g.:
+#   CONDA_OVERRIDE_OSX=15.5 micromamba create -f environment-macos.yml
+#
+# Need the optional LeRobot extras (sim envs, motors, policies, etc.)? After creating
+# the env, install them with pip, e.g.:
+#   pip install -e "./lerobot[aloha,pusht,feetech]"
+name: rosbag2lerobot
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip>=24.0
+  - cmake>=3.29
+  - ffmpeg>=6.0
+  - pip:
+      # Editable install of the bundled LeRobot 0.3.3 fork (core deps only).
+      # pip resolves macOS-appropriate wheels; pyproject markers already gate
+      # platform-specific packages such as torchcodec on darwin-x86_64.
+      - -e ./lerobot

@@ -1,0 +1,20 @@
+[project]
+name = "rosbag-to-lerobot-macos"
+version = "0.1.0"
+description = "macOS (ROS2-free) ROS2 bag to LeRobot dataset converter"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "rosbags>=0.10",
+    "av>=14.2.0,<16",
+    "numpy>=2.0",
+    "lerobot",
+    "huggingface-hub[hf-transfer,cli]>=0.34.2,<1.0",
+]
+
+[tool.uv.sources]
+lerobot = { path = "lerobot", editable = true }
+
+[tool.uv]
+# torchcodec has no reliable wheel against system ffmpeg 8 on macOS; the
+# converter forces the pyav decode backend instead, so it is not required.
+override-dependencies = ["torchcodec; sys_platform == 'never'"]
